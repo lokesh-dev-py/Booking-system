@@ -1,0 +1,204 @@
+body {
+    font-family: 'Roboto', sans-serif; /* Using a common sans-serif font */
+    background-color: #0d1117; /* Dark background */
+    color: #c9d1d9; /* Light text color */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #161b22; /* Slightly lighter dark for the form background */
+    border-radius: 8px;
+    padding: 30px;
+    width: 100%;
+    max-width: 900px; /* Adjust as needed */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    margin-bottom: 50px; /* Add some space at the bottom */
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    color: #58a6ff; /* Blue accent for header */
+}
+
+.form-header .header-icon {
+    width: 30px; /* Adjust icon size */
+    height: 30px;
+    margin-right: 10px;
+    /* You'll need to replace 'path/to/your/icon.png' with your actual icon */
+}
+
+.form-header h1 {
+    font-size: 1.8em;
+    font-weight: 500;
+}
+
+.form-section {
+    background-color: #0d1117; /* Even darker for sections */
+    border-radius: 6px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #30363d; /* Subtle border */
+}
+
+.form-section h2 {
+    color: #58a6ff; /* Blue accent for section titles */
+    font-size: 1.3em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #30363d;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    color: #c9d1d9;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    background-color: #010409; /* Very dark for inputs */
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: #c9d1d9;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+textarea::placeholder {
+    color: #8b949e;
+}
+
+select {
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23c9d1d9" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    cursor: pointer;
+}
+
+
+/* Radio and Checkbox Styling */
+.radio-group,
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for common issues */
+    gap: 15px 25px;
+}
+
+.checkbox-group.single-column {
+    flex-direction: column;
+}
+
+.radio-group input[type="radio"],
+.checkbox-group input[type="checkbox"] {
+    display: none; /* Hide default radio/checkbox */
+}
+
+.radio-group label,
+.checkbox-group label {
+    background-color: #0d1117; /* Dark background for options */
+    border: 1px solid #30363d;
+    border-radius: 20px; /* Pill shape */
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    font-size: 0.9em;
+    display: inline-block; /* Ensure padding works */
+    margin-bottom: 0; /* Override default label margin */
+    color: #8b949e;
+}
+
+.radio-group input[type="radio"]:checked + label,
+.checkbox-group input[type="checkbox"]:checked + label {
+    background-color: #213c6b; /* Darker blue when checked */
+    border-color: #58a6ff; /* Blue border when checked */
+    color: #c9d1d9;
+}
+
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between items in a column */
+}
+
+.note {
+    font-size: 0.85em;
+    color: #8b949e;
+    margin-top: 10px;
+    padding-left: 5px;
+}
+
+.submit-button {
+    background-color: #238636; /* GitHub green for submit */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    display: block;
+    width: fit-content; /* Adjust to content width */
+    margin: 30px auto 0 auto; /* Center the button */
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #2ea043;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    .radio-group,
+    .checkbox-group {
+        flex-direction: column; /* Stack radio/checkbox options on small screens */
+        gap: 10px;
+    }
+
+    .checkbox-column {
+        width: 100%; /* Full width for columns on small screens */
+    }
+
+    .submit-button {
+        width: 100%; /* Full width button on small screens */
+    }
+}

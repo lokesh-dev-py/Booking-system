@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Service Request Confirmation</title>
+</head>
+<body>
+    <h2>Your Service Request Details</h2>
+    <div id="requestDetails">Loading...</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const requestId = params.get("id");
+
+            if (!requestId) {
+                document.getElementById('requestDetails').innerText = "No ID provided.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/service-requests/${requestId}/`);
+                if (!response.ok) throw new Error("Failed to fetch");
+
+                const data = await response.json();
+                document.getElementById('requestDetails').innerHTML = `
+                    <p><strong>Full Name:</strong> ${data.full_name}</p>
+                    <p><strong>Phone Number:</strong> ${data.phone_number}</p>
+                    <p><strong>Email:</strong> ${data.email_address}</p>
+                    <p><strong>Address:</strong> ${data.address}</p>
+                    <p><strong>Model:</strong> ${data.tata_model}</p>
+                    <p><strong>Registration Year:</strong> ${data.reg_year}</p>
+                    <p><strong>Registration Number:</strong> ${data.reg_number}</p>
+                    <p><strong>Odometer Reading:</strong> ${data.odometer_reading}</p>
+                    <p><strong>Service Type:</strong> ${data.service_type}</p>
+                    <p><strong>Common Issues:</strong> ${data.common_issues.join(', ')}</p>
+                    <p><strong>Additional Details:</strong> ${data.additional_details}</p>
+                    <p><strong>Preferred Date:</strong> ${data.preferred_date}</p>
+                    <p><strong>Preferred Time Slot:</strong> ${data.preferred_time_slot}</p>
+                    <p><strong>Service Preferences:</strong> ${data.service_pref.join(', ')}</p>
+                `;
+            } catch (err) {
+                document.getElementById('requestDetails').innerText = "Error loading service request.";
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>

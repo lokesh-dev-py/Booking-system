@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Request Form</title>
+    {# Correctly link your stylesheet using Django's static tag #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="form-header">
+            {# Correctly link your image using Django's static tag #}
+            <img src="{% static 'img/service_icon.png' %}" alt="Service Icon" class="header-icon">
+            <h1>Service Request Form</h1>
+        </header>
+
+        <form method="post"> {# Added method="post" as forms typically submit data #}
+            {% csrf_token %} {# Add this for Django forms for security #}
+
+            <section class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        {# Added inputmode="numeric" for mobile numeric keyboard #}
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required inputmode="numeric">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emailAddress">Email Address</label>
+                        <input type="email" id="emailAddress" name="emailAddress" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Enter your address">
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>Vehicle Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tataModel">TATA Model</label>
+                        <select id="tataModel" name="tataModel" required>
+                            <option value="">Select your vehicle model</option>
+                            <option value="nexon">Nexon</option>
+                            <option value="harrier">Harrier</option>
+                            <option value="punch">Punch</option>
+                            <option value="altroz">Altroz</option>
+                            <option value="tiago">Tiago</option>
+                            <option value="tigorev">Tigor EV</option>
+                            <option value="safari">Safari</option> {# Added Safari #}
+                            <option value="sumo">Sumo</option> {# Added Sumo for older models #}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regYear">Vehicle Registration Year</label>
+                        <input type="number" id="regYear" name="regYear" placeholder="e.g., 2020" min="1900" max="2099" step="1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regNumber">Registration Number</label>
+                        <input type="text" id="regNumber" name="regNumber" placeholder="e.g., MP09ABCD1234" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="odometerReading">Odometer Reading (km)</label>
+                        <input type="number" id="odometerReading" name="odometerReading" placeholder="Enter current km reading" min="0" required>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>Service Details</h2>
+                <div class="form-group">
+                    <label>Service Type</label>
+                    <div class="radio-group">
+                        <input type="radio" id="regularMaintenance" name="serviceType" value="regularMaintenance" checked>
+                        <label for="regularMaintenance">Regular Maintenance</label>
+                        <input type="radio" id="repairService" name="serviceType" value="repairService">
+                        <label for="repairService">Repair Service</label>
+                        <input type="radio" id="warrantyService" name="serviceType" value="warrantyService">
+                        <label for="warrantyService">Warranty Service</label>
+                        <input type="radio" id="amcService" name="serviceType" value="amcService">
+                        <label for="amcService">AMC Service</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Common Issues (Select all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-column">
+                            <div><input type="checkbox" id="startingProblem" name="commonIssues" value="startingProblem"><label for="startingProblem">Starting Problem</label></div>
+                            <div><input type="checkbox" id="engineOverheating" name="commonIssues" value="engineOverheating"><label for="engineOverheating">Engine Overheating</label></div>
+                            <div><input type="checkbox" id="suspensionIssue" name="commonIssues" value="suspensionIssue"><label for="suspensionIssue">Suspension/Leaf Spring Issues</label></div>
+                            <div><input type="checkbox" id="emergencyCheck" name="commonIssues" value="emergencyCheck"><label for="emergencyCheck">Emergency/Check Light</label></div>
+                            <div><input type="checkbox" id="tyrePuncture" name="commonIssues" value="tyrePuncture"><label for="tyrePuncture">Tyre Puncture/Damage</label></div>
+                        </div>
+                        <div class="checkbox-column">
+                            <div><input type="checkbox" id="clutchNoises" name="commonIssues" value="clutchNoises"><label for="clutchNoises">Clutch Noises</label></div>
+                            <div><input type="checkbox" id="pressureLineLeakage" name="commonIssues" value="pressureLineLeakage"><label for="pressureLineLeakage">Brake/Pressure Line Leakage</label></div>
+                            <div><input type="checkbox" id="accidentalDamages" name="commonIssues" value="accidentalDamages"><label for="accidentalDamages">Accidental Damages</label></div>
+                            <div><input type="checkbox" id="crownNoises" name="commonIssues" value="crownNoises"><label for="crownNoises">Differential/Crown Noises</label></div>
+                            <div><input type="checkbox" id="otherIssue" name="commonIssues" value="otherIssue"><label for="otherIssue">Other Issue (Specify below)</label></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalDetails">Additional Details</label>
+                    <textarea id="additionalDetails" name="additionalDetails" rows="4" placeholder="Any other details about your service need, including specifics for 'Other Issue'"></textarea>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>Appointment Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="preferredDate">Preferred Date</label>
+                        <input type="date" id="preferredDate" name="preferredDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="preferredTimeSlot">Preferred Time Slot</label>
+                        <select id="preferredTimeSlot" name="preferredTimeSlot" required>
+                            <option value="">Select time slot</option>
+                            <option value="9:00-10:00">9:00 AM - 10:00 AM</option>
+                            <option value="10:00-11:00">10:00 AM - 11:00 AM</option>
+                            <option value="11:00-12:00">11:00 AM - 12:00 PM</option>
+                            <option value="12:00-13:00">12:00 PM - 1:00 PM</option>
+                            <option value="14:00-15:00">2:00 PM - 3:00PM</option>
+                            <option value="15:00-16:00">3:00 PM - 4:00 PM</option>
+                            <option value="16:00-17:00">4:00 PM - 5:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="note">Please note that time slots are subject to availability. Our service center is open Monday to Saturday, 9 AM - 6 PM.</p>
+            </section>
+
+            <section class="form-section">
+                <h2>Additional Preferences</h2>
+                <div class="form-group">
+                    <label>Service Preferences</label>
+                    <div class="checkbox-group single-column">
+                        <div><input type="checkbox" id="customerLounge" name="servicePref" value="customerLounge"><label for="customerLounge">I'll wait in the customer lounge</label></div>
+                        <div><input type="checkbox" id="roadsideAssistance" name="servicePref" value="roadsideAssistance"><label for="roadsideAssistance">I need Roadside Assistance</label></div>
+                        <div><input type="checkbox" id="onSiteService" name="servicePref" value="onSiteService"><label for="onSiteService">I would like On-Site Service (if available)</label></div>
+                    </div>
+                </div>
+            </section>
+
+            <button type="submit" class="submit-button">Submit Booking Request</button>
+        </form>
+    </div>
+
+    {# Moved JavaScript to the end of the body for better performance #}
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
