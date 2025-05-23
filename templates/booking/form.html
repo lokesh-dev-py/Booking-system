@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Service Booking - AutoCare Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Book Your Vehicle Service</h2>
+
+        <form id="bookingForm" class="space-y-6" method="post">
+            {% csrf_token %}
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Customer Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="customerName" name="customerName" placeholder="John Doe" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="customerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" id="customerPhone" name="customerPhone" placeholder="9876543210" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="customerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="customerEmail" name="customerEmail" placeholder="john.doe@example.com"
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="customerAddress" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <textarea id="customerAddress" name="customerAddress" rows="3" placeholder="123 Main St, Anytown, State, 12345"
+                                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-y"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Vehicle Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="vehicleMake" class="block text-sm font-medium text-gray-700 mb-1">Make</label>
+                        <select id="vehicleMake" name="vehicleMake" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select Make</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Royal Enfield">Royal Enfield</option>
+                            <option value="TVS">TVS</option>
+                            <option value="Maruti Suzuki">Maruti Suzuki</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Mahindra">Mahindra</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="vehicleModel" class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                        <input type="text" id="vehicleModel" name="vehicleModel" placeholder="Activa 6G / Classic 350 / Swift" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="vehicleYear" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                        <input type="number" id="vehicleYear" name="vehicleYear" placeholder="2020" min="1900" max="2099"
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="registrationNumber" class="block text-sm font-medium text-gray-700 mb-1">Registration Number</label>
+                        <input type="text" id="registrationNumber" name="registrationNumber" placeholder="MH12AB3456" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm uppercase">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Service Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="serviceType" class="block text-sm font-medium text-gray-700 mb-1">Type of Service</label>
+                        <select id="serviceType" name="serviceType" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select Service Type</option>
+                            <option value="General Service">General Service</option>
+                            <option value="Major Repair">Major Repair</option>
+                            <option value="Accidental Repair">Accidental Repair</option>
+                            <option value="Brake Service">Brake Service</option>
+                            <option value="Engine Check-up">Engine Check-up</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="preferredDate" class="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label>
+                        <input type="date" id="preferredDate" name="preferredDate" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="preferredTime" class="block text-sm font-medium text-gray-700 mb-1">Preferred Time Slot</label>
+                        <select id="preferredTime" name="preferredTime" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Select Time</option>
+                            <option value="09:00-10:00">09:00 AM - 10:00 AM</option>
+                            <option value="10:00-11:00">10:00 AM - 11:00 AM</option>
+                            <option value="11:00-12:00">11:00 AM - 12:00 PM</option>
+                            <option value="13:00-14:00">01:00 PM - 02:00 PM</option>
+                            <option value="14:00-15:00">02:00 PM - 03:00 PM</option>
+                            <option value="15:00-16:00">03:00 PM - 04:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="issueDescription" class="block text-sm font-medium text-gray-700 mb-1">Description of Issue / Special Requests</label>
+                        <textarea id="issueDescription" name="issueDescription" rows="4" placeholder="Describe the problem you're facing or any specific requests for the service..."
+                                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-y"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <button type="submit" id="submitButton"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    Book Service Now
+                </button>
+            </div>
+            <div id="formMessage" class="mt-4 text-center text-sm font-medium hidden"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const submitButton = document.getElementById('submitButton');
+            const formMessage = document.getElementById('formMessage');
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            formMessage.textContent = '';
+            formMessage.className = 'mt-4 text-center text-sm font-medium hidden';
+
+            // Mappings (By Lokesh)
+            const makeMapping = {
+                "Honda": "honda",
+                "Royal Enfield": "royalEnfield",
+                "TVS": "tvs",
+                "Maruti Suzuki": "marutiSuzuki",
+                "Hyundai": "hyundai",
+                "Mahindra": "mahindra",
+                "Other": "other"
+            };
+
+            const serviceTypeMapping = {
+                "General Service": "generalService",
+                "Major Repair": "majorRepair",
+                "Accidental Repair": "accidentalRepair",
+                "Brake Service": "breakService",
+                "Engine Check-up": "engineCheckup",
+                "Other": "other"
+            };
+
+            // Collect form data
+            const formData = {
+                customerName: form.customerName.value,
+                customerPhone: form.customerPhone.value,
+                customerEmail: form.customerEmail.value,
+                customerAddress: form.customerAddress.value,
+                vehicleMake: makeMapping[form.vehicleMake.value], // Changed
+                vehicleModel: form.vehicleModel.value,
+                vehicleYear: form.vehicleYear.value,
+                registrationNumber: form.registrationNumber.value.toUpperCase(), // Ensure uppercase
+                serviceType: serviceTypeMapping[form.serviceType.value], // Changed
+                preferredDate: form.preferredDate.value,
+                preferredTime: form.preferredTime.value,
+                issueDescription: form.issueDescription.value,
+                status: 'Pending' // Initial status
+            };
+
+            // --- BACKEND INTEGRATION POINT ---
+            // Your friends' backend should have an API endpoint to receive this data
+            // Example: 'https://your-backend.com/api/bookings'
+            const API_ENDPOINT = 'http://localhost:8000/api/service-requests/'; // <--- IMPORTANT: Replace this
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include any authentication tokens if required by your backend
+                        // 'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json(); // Assuming backend returns a JSON success message/data
+                    formMessage.textContent = 'Booking submitted successfully! Booking ID: ' + (result.bookingId || 'N/A');
+                    formMessage.className = 'mt-4 text-center text-sm font-medium text-green-700';
+                    formMessage.classList.remove('hidden');
+                    form.reset(); // Clear form after successful submission
+                } else {
+                    const errorData = await response.json(); // Assuming backend returns JSON error details
+                    formMessage.textContent = 'Failed to submit booking: ' + (errorData.message || 'Server error.');
+                    formMessage.className = 'mt-4 text-center text-sm font-medium text-red-700';
+                    formMessage.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error submitting booking:', error);
+                formMessage.textContent = 'An unexpected error occurred. Please try again.';
+                formMessage.className = 'mt-4 text-center text-sm font-medium text-red-700';
+                formMessage.classList.remove('hidden');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Book Service Now';
+            }
+        });
+
+        // Function to set minimum date for preferredDate input (optional but good UX)
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const minDate = yyyy + '-' + mm + '-' + dd;
+            document.getElementById('preferredDate').setAttribute('min', minDate);
+        });
+    </script>
+</body>
+</html>

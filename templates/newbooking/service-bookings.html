@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Bookings List - AutoCare Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-gray-800 text-white p-4 shadow-md flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="https://placehold.co/40x40/3498db/ffffff?text=Auto" alt="Auto Agency Logo" class="rounded-full mr-3">
+            <h1 class="text-2xl font-bold">Service Bookings</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="text-sm">Welcome, Jane Smith</span>
+            <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm transition duration-150 ease-in-out">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 p-6">
+        <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-xl p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">All Service Bookings</h2>
+
+            <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label for="searchQuery" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                        <input type="text" id="searchQuery" placeholder="Name, Reg. No., Booking ID"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="filterStatus" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="filterStatus"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filterDateFrom" class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+                        <input type="date" id="filterDateFrom"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="filterDateTo" class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+                        <input type="date" id="filterDateTo"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-3">
+                    <button id="applyFiltersBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        <i class="fas fa-filter mr-2"></i>Apply Filters
+                    </button>
+                    <button id="resetFiltersBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-5 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        <i class="fas fa-sync-alt mr-2"></i>Reset Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-gray-500" id="loadingMessage">Loading bookings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="noBookingsMessage" class="hidden text-center py-4 text-gray-500">No bookings found.</div>
+                <div id="errorMessage" class="hidden text-center py-4 text-red-600">Failed to load bookings. Please try again.</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const bookingsTableBody = document.getElementById('bookingsTableBody');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const noBookingsMessage = document.getElementById('noBookingsMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let allBookings = []; // To store all fetched bookings for filtering
+
+        // --- BACKEND INTEGRATION POINT ---
+        // Your friends' backend should have an API endpoint to retrieve all bookings
+        // Example: 'https://your-backend.com/api/bookings'
+        const API_ENDPOINT = 'YOUR_BACKEND_BOOKINGS_LIST_API_ENDPOINT_HERE'; // <--- IMPORTANT: Replace this
+
+        async function fetchBookings() {
+            loadingMessage.classList.remove('hidden');
+            noBookingsMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            bookingsTableBody.innerHTML = ''; // Clear existing rows
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include any authentication tokens if required by your backend
+                        // 'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    }
+                });
+
+                if (response.ok) {
+                    allBookings = await response.json(); // Assuming backend returns an array of booking objects
+                    displayBookings(allBookings);
+                } else {
+                    const errorData = await response.json();
+                    errorMessage.textContent = 'Failed to load bookings: ' + (errorData.message || 'Server error.');
+                    errorMessage.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                errorMessage.textContent = 'An unexpected error occurred while fetching bookings. Please check network connection.';
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loadingMessage.classList.add('hidden');
+            }
+        }
+
+        function displayBookings(bookingsToDisplay) {
+            bookingsTableBody.innerHTML = ''; // Clear previous bookings
+            if (bookingsToDisplay.length === 0) {
+                noBookingsMessage.classList.remove('hidden');
+                return;
+            }
+
+            bookingsToDisplay.forEach(booking => {
+                const row = document.createElement('tr');
+                let statusClass = '';
+                switch (booking.status) {
+                    case 'Pending':
+                        statusClass = 'bg-yellow-100 text-yellow-800';
+                        break;
+                    case 'Confirmed':
+                        statusClass = 'bg-green-100 text-green-800';
+                        break;
+                    case 'In Progress':
+                        statusClass = 'bg-blue-100 text-blue-800';
+                        break;
+                    case 'Completed':
+                        statusClass = 'bg-gray-100 text-gray-800'; // Or another color for completed
+                        break;
+                    case 'Cancelled':
+                        statusClass = 'bg-red-100 text-red-800';
+                        break;
+                    default:
+                        statusClass = 'bg-gray-100 text-gray-800';
+                }
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.bookingId || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${booking.customerName || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${booking.vehicleMake || ''} ${booking.vehicleModel || ''} (${booking.registrationNumber || 'N/A'})</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${booking.serviceType || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${booking.preferredDate || 'N/A'}, ${booking.preferredTime || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${booking.status || 'N/A'}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewBookingDetails('${booking.bookingId}')" class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-eye"></i> View</button>
+                        <button onclick="editBookingStatus('${booking.bookingId}')" class="text-green-600 hover:text-green-900"><i class="fas fa-edit"></i> Edit</button>
+                    </td>
+                `;
+                bookingsTableBody.appendChild(row);
+            });
+        }
+
+        // Client-side filtering logic
+        document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterDateFrom = document.getElementById('filterDateFrom').value;
+            const filterDateTo = document.getElementById('filterDateTo').value;
+
+            const filteredBookings = allBookings.filter(booking => {
+                const matchesSearch = !searchQuery ||
+                                      (booking.customerName && booking.customerName.toLowerCase().includes(searchQuery)) ||
+                                      (booking.registrationNumber && booking.registrationNumber.toLowerCase().includes(searchQuery)) ||
+                                      (booking.bookingId && booking.bookingId.toLowerCase().includes(searchQuery));
+
+                const matchesStatus = !filterStatus || booking.status === filterStatus;
+
+                const matchesDateFrom = !filterDateFrom || (booking.preferredDate && booking.preferredDate >= filterDateFrom);
+                const matchesDateTo = !filterDateTo || (booking.preferredDate && booking.preferredDate <= filterDateTo);
+
+                return matchesSearch && matchesStatus && matchesDateFrom && matchesDateTo;
+            });
+            displayBookings(filteredBookings);
+        });
+
+        document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+            document.getElementById('searchQuery').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            displayBookings(allBookings); // Show all bookings again
+        });
+
+        // Placeholder functions for actions (would interact with backend in a real app)
+        function viewBookingDetails(bookingId) {
+            // --- BACKEND INTEGRATION POINT ---
+            // You might redirect to a detail page or open a modal with more info fetched from backend
+            alert('Viewing details for Booking ID: ' + bookingId);
+            // Example: window.location.href = `/booking-details.html?id=${bookingId}`;
+        }
+
+        function editBookingStatus(bookingId) {
+            // --- BACKEND INTEGRATION POINT ---
+            // This would likely lead to a specific page or modal to update the status in the backend
+            alert('Editing status for Booking ID: ' + bookingId);
+            // Example: You might show a prompt or a small form to select new status
+            // const newStatus = prompt('Enter new status (e.g., Confirmed, In Progress, Completed):');
+            // if (newStatus) {
+            //     // Call a backend API to update status:
+            //     // fetch(`/api/bookings/${bookingId}/status`, { method: 'PUT', body: JSON.stringify({ status: newStatus })})
+            //     // .then(response => { if (response.ok) fetchBookings(); }); // Refresh list on success
+            // }
+        }
+
+        // Fetch bookings when the page loads
+        document.addEventListener('DOMContentLoaded', fetchBookings);
+    </script>
+</body>
+</html>

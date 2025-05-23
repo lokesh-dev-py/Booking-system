@@ -5,11 +5,11 @@ from .serializers import ServiceRequestSerializer
 # Create your views here.
 
 class ServiceRequestViewSet(viewsets.ModelViewSet):
-    queryset = ServiceRequest.objects.all().order_by('-created_at')
+    queryset = ServiceRequest.objects.all().order_by('-bookingDate')
     serializer_class = ServiceRequestSerializer
 
 def service_request_form_view(request):
-    return render(request, 'booking/home.html')
+    return render(request, 'booking/form.html')
 
 def confirmation_page(request):
     return render(request, 'booking/confirmation.html')
