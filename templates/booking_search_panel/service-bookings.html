@@ -107,7 +107,7 @@
         // --- BACKEND INTEGRATION POINT ---
         // Your friends' backend should have an API endpoint to retrieve all bookings
         // Example: 'https://your-backend.com/api/bookings'
-        const API_ENDPOINT = 'YOUR_BACKEND_BOOKINGS_LIST_API_ENDPOINT_HERE'; // <--- IMPORTANT: Replace this
+        const API_ENDPOINT = 'http://localhost:8000/api/bookings/'; // <--- IMPORTANT: Replace this
 
         async function fetchBookings() {
             loadingMessage.classList.remove('hidden');
@@ -120,13 +120,13 @@
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        // Include any authentication tokens if required by your backend
-                        // 'Authorization': 'Bearer YOUR_AUTH_TOKEN'
                     }
                 });
 
                 if (response.ok) {
-                    allBookings = await response.json(); // Assuming backend returns an array of booking objects
+                    const data = await response.json();
+                    // DRF paginates, so bookings are in data.results
+                    allBookings = data.results || data; 
                     displayBookings(allBookings);
                 } else {
                     const errorData = await response.json();
@@ -141,6 +141,7 @@
                 loadingMessage.classList.add('hidden');
             }
         }
+
 
         function displayBookings(bookingsToDisplay) {
             bookingsTableBody.innerHTML = ''; // Clear previous bookings
@@ -229,18 +230,94 @@
             // Example: window.location.href = `/booking-details.html?id=${bookingId}`;
         }
 
-        function editBookingStatus(bookingId) {
-            // --- BACKEND INTEGRATION POINT ---
-            // This would likely lead to a specific page or modal to update the status in the backend
-            alert('Editing status for Booking ID: ' + bookingId);
-            // Example: You might show a prompt or a small form to select new status
-            // const newStatus = prompt('Enter new status (e.g., Confirmed, In Progress, Completed):');
-            // if (newStatus) {
-            //     // Call a backend API to update status:
-            //     // fetch(`/api/bookings/${bookingId}/status`, { method: 'PUT', body: JSON.stringify({ status: newStatus })})
-            //     // .then(response => { if (response.ok) fetchBookings(); }); // Refresh list on success
-            // }
+        async function editBookingStatus(bookingId) {
+            // Create a modal div
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = 0;
+            modal.style.left = 0;
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = 1000;
+
+            // Modal content container
+            const content = document.createElement('div');
+            content.style.background = 'white';
+            content.style.padding = '20px';
+            content.style.borderRadius = '8px';
+            content.style.minWidth = '300px';
+            content.style.textAlign = 'center';
+
+            // Label and select box
+            const label = document.createElement('label');
+            label.textContent = 'Select new status: ';
+            label.htmlFor = 'statusSelect';
+
+            const select = document.createElement('select');
+            select.id = 'statusSelect';
+            ['Pending', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'].forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status;
+                select.appendChild(option);
+            });
+
+            // Buttons
+            const btnCancel = document.createElement('button');
+            btnCancel.textContent = 'Cancel';
+            btnCancel.style.margin = '10px';
+
+            const btnSubmit = document.createElement('button');
+            btnSubmit.textContent = 'Update Status';
+            btnSubmit.style.margin = '10px';
+
+            content.appendChild(label);
+            content.appendChild(select);
+            content.appendChild(document.createElement('br'));
+            content.appendChild(btnCancel);
+            content.appendChild(btnSubmit);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+
+            // Cancel handler
+            btnCancel.onclick = () => {
+                document.body.removeChild(modal);
+            };
+
+            // Submit handler
+            btnSubmit.onclick = async () => {
+                const newStatus = select.value;
+                if (!newStatus) return;
+
+                try {
+                const response = await fetch(`http://localhost:8000/api/bookings/${bookingId}/status/`, {
+                    method: 'PATCH',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus }),
+                });
+
+                if (response.ok) {
+                    alert('Booking status updated successfully.');
+                    fetchBookings();  // Refresh the table
+                } else {
+                    const errorData = await response.json();
+                    alert('Failed to update status: ' + (errorData.message || 'Server error.'));
+                }
+                } catch (error) {
+                alert('Error updating status. Please try again.');
+                console.error('Error:', error);
+                } finally {
+                document.body.removeChild(modal);
+                }
+            };
         }
+
 
         // Fetch bookings when the page loads
         document.addEventListener('DOMContentLoaded', fetchBookings);

@@ -1,7 +1,38 @@
 from django.db import models
 import datetime
 
+# Service Details
+SERVICE_TYPES = [
+    ('generalService', 'General Service'),
+    ('majorRepair', 'Major Repair'),
+    ('accidentalRepair', 'Accidental Repair'),
+    ('breakService', 'Break Service'),
+    ('engineCheckup', 'Engine Check-Up'),
+    ('other', 'Other'),
+]
+
+# Make choices
+MAKE_CHOICE = [
+    ('honda', 'Honda'),
+    ('royalEnfield', 'Royal Enfield'),
+    ('tvs', 'TVS'),
+    ('marutiSuzuki', 'Maruti Suzuki'),
+    ('hyundai', 'Hyundai'),
+    ('mahindra', 'Mahindra'),
+    ('other', 'Other'),
+]
+
+#Group names 
 GROUPS = ['A', 'B', 'C', 'D']
+
+#Status choices
+STATUS_CHOICES = [
+    ('Pending', 'Pending'),
+    ('Confirmed', 'Confirmed'),
+    ('In Progress', 'In Progress'),
+    ('Completed', 'Completed'),
+    ('Cancelled', 'Cancelled'),
+]
 
 class ServiceRequest(models.Model):
     # Personal Information
@@ -11,29 +42,13 @@ class ServiceRequest(models.Model):
     customerAddress = models.TextField(max_length=255, blank=True, null=True)
 
     # Vehicle Information
-    MAKE_CHOICE = [
-        ('honda', 'Honda'),
-        ('royalEnfield', 'Royal Enfield'),
-        ('tvs', 'TVS'),
-        ('marutiSuzuki', 'Maruti Suzuki'),
-        ('hyundai', 'Hyundai'),
-        ('mahindra', 'Mahindra'),
-        ('other', 'Other'),
-    ]
+    
     vehicleMake = models.CharField(max_length=20, choices=MAKE_CHOICE)
     vehicleModel = models.CharField(max_length=255)
     vehicleYear = models.PositiveIntegerField()
     registrationNumber = models.CharField(max_length=20)
 
-    # Service Details
-    SERVICE_TYPES = [
-        ('generalService', 'General Service'),
-        ('majorRepair', 'Major Repair'),
-        ('accidentalRepair', 'Accidental Repair'),
-        ('breakService', 'Break Service'),
-        ('engineCheckup', 'Engine Check-Up'),
-        ('other', 'Other'),
-    ]
+    
     serviceType = models.CharField(max_length=30, choices=SERVICE_TYPES)
     preferredDate = models.DateField()
     preferredTime = models.CharField(max_length=20)
@@ -41,7 +56,7 @@ class ServiceRequest(models.Model):
     # Common issues (multi-select stored as comma-separated values)
     issueDescription = models.TextField(blank=True, help_text="Comma-separated list of selected issues")
     bookingDate = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=30, default="Pending")
+    status = models.CharField(max_length=30, default="Pending", choices=STATUS_CHOICES)
 
     class Meta:
         ordering = ['bookingDate']
